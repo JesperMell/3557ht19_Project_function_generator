@@ -4,31 +4,23 @@
 #include <ctype.h>
 #include <stdint.h>
 
-#define BUFFER_SIZE 4
 
-void print_main_menu()
+void print_menu()
 {
-    Serial.print("\n\n Options \n\n");
-    Serial.print(" (S) Sine waveform\n");
-    Serial.print(" (T) Triangle waveform \n");
-    Serial.print(" Select option: ");
+    Serial.printf("%c) Select the waveform\n", WAVEFORM_OPTION);
+    Serial.printf("%c) Set the frequency\n", FREQUENCY_OPTION);
+    Serial.printf("%c) Set the magnitude\n", MAGNITUDE_OPTION);
+    Serial.printf("%c) Information\n", INFORMATION_OPTION);
+    Serial.print("Enter the command: ");
 }
 
-void print_selection_menu()
-{
-    Serial.print("\n Options \n");
-    Serial.print(" (F) Select frequency\n");
-    Serial.print(" (M) Select magnitude\n");
-    Serial.print(" (I) Show information\n");
-    Serial.print(" (B) Back\n");
-    Serial.print(" Selection option: ");
-}
 
-char read_option_main_menu()
+
+char waveform_option()
 {
     char option = 0;
 
-    while ((option != 'S') && (option != 'T') && (option != '\n'))
+    while ((option != SINE_WAVEFORM) && (option != TRIANGLE_WAVEFORM) && (option != '\n'))
     {
         if (Serial.available())
         {
@@ -45,7 +37,7 @@ char read_selection_menu()
 {
     char option = 0;
 
-    while ((option != 'F') && (option != 'I') && (option != 'M') && (option != 'B') && (option != '\n'))
+    while ((option != FREQUENCY_OPTION) && (option != INFORMATION_OPTION) && (option != MAGNITUDE_OPTION) && (option != WAVEFORM_OPTION) && (option != '\n'))
     {
         if (Serial.available())
         {
@@ -58,13 +50,13 @@ char read_selection_menu()
     return option;
 }
 
-uint16_t set_frequency()
+uint16_t set_wave_values()
 {
 
     char buffer[BUFFER_SIZE];
     uint8_t i = 0;
 
-    uint16_t frequency_value = 0;
+    uint16_t wave_value = 0;
 
     while (i < BUFFER_SIZE)
     {
@@ -84,11 +76,11 @@ uint16_t set_frequency()
         }
     }
 
-    buffer[BUFFER_SIZE - 1] = '\0';
+    buffer[BUFFER_SIZE - 1] = 0;
 
-    frequency_value = atoi(buffer);
+    wave_value = atoi(buffer);
 
     Serial.clear();
 
-    return frequency_value;
+    return wave_value;
 }

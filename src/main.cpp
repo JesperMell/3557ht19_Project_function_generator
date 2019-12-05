@@ -1,6 +1,10 @@
 #include <Arduino.h>
 #include <menu.h>
 
+char waveform = TRIANGLE_WAVEFORM;
+uint16_t frequency_value = MIN_FREQUENCY;
+uint16_t magnitude_value = MIN_MAGNITUDE;
+
 void setup()
 {
   Serial.begin(9600);
@@ -11,77 +15,60 @@ void setup()
 void loop()
 {
 
-  print_main_menu();
+  print_menu();
 
-  char selection;
+  char selection = read_selection_menu();
 
-  char menu_select = read_option_main_menu();
-
-  if (menu_select == 'S')
+  if (selection == WAVEFORM_OPTION)
   {
-    do
+    //CALL FUNCTION TO SET WAVEFORM
+    Serial.printf("\n Waveform options\n");
+    Serial.printf("%c) Sinewave\n", SINE_WAVEFORM);
+    Serial.printf("%c) Triangewave\n", TRIANGLE_WAVEFORM);
+
+    waveform = waveform_option();
+
+    Serial.printf("\n");
+  }
+  else if (selection == FREQUENCY_OPTION)
+  {
+    //CALL FUNCTION TO SET FREQUENCY
+    Serial.printf(" Please write your desired frequency (%d - %d Hz): \n", MIN_FREQUENCY, MAX_FREQUENCY);
+
+    frequency_value = set_wave_values();
+
+    if (frequency_value < MIN_FREQUENCY)
     {
+      frequency_value = MIN_FREQUENCY;
+    }
+    else if (frequency_value > MAX_FREQUENCY)
+    {
+      frequency_value = MAX_FREQUENCY;
+    }
+    Serial.printf("\n\n");
+  }
+  else if (selection == MAGNITUDE_OPTION)
+  {
+    //CALL FUNCTION TO SET MAGNITUDE
+    Serial.printf(" Please write your desired magnitude (%d - %d): ", MIN_MAGNITUDE, MAX_MAGNITUDE);
 
-      print_selection_menu();
+    magnitude_value = set_wave_values();
 
-      selection = read_selection_menu();
+    if (magnitude_value < MIN_MAGNITUDE)
+    {
+      magnitude_value = MIN_MAGNITUDE;
+    }
+    else if (magnitude_value > MAX_MAGNITUDE)
+    {
+      magnitude_value = MAX_MAGNITUDE;
+    }
 
-      if (selection == 'F')
-      {
-        //CALL FUNCTION TO SET FREQUENCY
-        Serial.printf(" Please write your desired frequency (%d - %d): \n", MIN_FREQUENCY, MAX_FREQUENCY);
-
-        uint16_t frequency_value = set_frequency();
-
-        if (frequency_value < MIN_FREQUENCY)
-        {
-          frequency_value = MIN_FREQUENCY;
-        }
-        else if (frequency_value > MAX_FREQUENCY)
-        {
-          frequency_value = MAX_FREQUENCY;
-        }
-      }
-      else if (selection == 'M')
-      {
-        //CALL FUNCTION TO SET MAGNITUDE
-      }
-      else if (selection == 'I')
-      {
-        //CALL FUNCTION TO SHOW INFORMATION ABOUT SET FREQUENCY AND MAGNITUDE
-      }
-    } while (selection != 'B');
+    Serial.printf("\n\n");
   }
 
-  else if (menu_select == 'T')
+  else if (selection == INFORMATION_OPTION)
   {
-    print_selection_menu();
-
-    selection = read_selection_menu();
-
-    if (selection == 'F')
-    {
-      //CALL FUNCTION TO SET FREQUENCY
-      Serial.printf(" Please write your desired frequency (%d - %d): \n", MIN_FREQUENCY, MAX_FREQUENCY);
-
-      uint16_t frequency_value = set_frequency();
-
-      if (frequency_value < MIN_FREQUENCY)
-      {
-        frequency_value = MIN_FREQUENCY;
-      }
-      else if (frequency_value > MAX_FREQUENCY)
-      {
-        frequency_value = MAX_FREQUENCY;
-      }
-    }
-    else if (selection == 'M')
-    {
-      //CALL FUNCTION TO SET MAGNITUDE
-    }
-    else if (selection == 'I')
-    {
-      //CALL FUNCTION TO SHOW INFORMATION ABOUT SET FREQUENCY AND MAGNITUDE
-    }
+    //CALL FUNCTION TO SHOW INFORMATION
+    Serial.printf("Waveform: %s, Frequency: %d Hz, Magnitude: %d\n\n", (waveform == SINE_WAVEFORM) ? "Sine" : "Triangle", frequency_value, magnitude_value);
   }
 }
