@@ -1,6 +1,9 @@
 #include <Arduino.h>
 #include <menu.h>
+#include <functions.h>
+#include <IntervalTimer.h>
 
+IntervalTimer timer;
 char waveform = TRIANGLE_WAVEFORM;
 uint16_t frequency_value = MIN_FREQUENCY;
 uint16_t magnitude_value = MIN_MAGNITUDE;
@@ -10,6 +13,8 @@ void setup()
   Serial.begin(9600);
   while (!Serial.available())
     ;
+    analogWriteRes(DAC_RESOLUTION);
+    timer.begin(generateVoltage, 1000);
 }
 
 void loop()
